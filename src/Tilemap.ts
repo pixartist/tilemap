@@ -97,7 +97,7 @@ export class Tilemap extends Container
      *
      * @see CompositeTilemap.tileAnim
      */
-    public tileAnim: [number, number] = null;
+    public tileAnim: [number, number] | null = null;
 
     /**
      * This is the last uploaded size of the tilemap geometry.
@@ -425,10 +425,10 @@ export class Tilemap extends Container
     }
 
     private vbId = 0;
-    vb: TilemapGeometry = null;
-    private vbBuffer: ArrayBuffer = null;
-    private vbArray: Float32Array = null;
-    private vbInts: Uint32Array = null;
+    vb: TilemapGeometry | null = null;
+    private vbBuffer: ArrayBuffer | null = null;
+    private vbArray: Float32Array | null = null;
+    private vbInts: Uint32Array | null = null;
 
     private destroyVb(): void
     {
@@ -563,77 +563,79 @@ export class Tilemap extends Container
                 u3 = cX + (w2 * groupD8.uX(rotate));
                 v3 = cY + (h2 * groupD8.uY(rotate));
             }
+            if(arr && ints) {
+                arr[sz++] = x;
+                arr[sz++] = y;
+                arr[sz++] = u0;
+                arr[sz++] = v0;
+                arr[sz++] = u + eps;
+                arr[sz++] = v + eps;
+                arr[sz++] = u + w - eps;
+                arr[sz++] = v + h - eps;
+                arr[sz++] = animXEncoded;
+                arr[sz++] = animYEncoded;
+                ints[sz++] = textureId;
+                arr[sz++] = animDivisor;
+                arr[sz++] = colR;
+                arr[sz++] = colG;
+                arr[sz++] = colB;
+                arr[sz++] = colA;
 
-            arr[sz++] = x;
-            arr[sz++] = y;
-            arr[sz++] = u0;
-            arr[sz++] = v0;
-            arr[sz++] = u + eps;
-            arr[sz++] = v + eps;
-            arr[sz++] = u + w - eps;
-            arr[sz++] = v + h - eps;
-            arr[sz++] = animXEncoded;
-            arr[sz++] = animYEncoded;
-            ints[sz++] = textureId;
-            arr[sz++] = animDivisor;
-            arr[sz++] = colR;
-            arr[sz++] = colG;
-            arr[sz++] = colB;
-            arr[sz++] = colA;
+                arr[sz++] = x + w;
+                arr[sz++] = y;
+                arr[sz++] = u1;
+                arr[sz++] = v1;
+                arr[sz++] = u + eps;
+                arr[sz++] = v + eps;
+                arr[sz++] = u + w - eps;
+                arr[sz++] = v + h - eps;
+                arr[sz++] = animXEncoded;
+                arr[sz++] = animYEncoded;
+                ints[sz++] = textureId;
+                arr[sz++] = animDivisor;
+                arr[sz++] = colR;
+                arr[sz++] = colG;
+                arr[sz++] = colB;
+                arr[sz++] = colA;
 
-            arr[sz++] = x + w;
-            arr[sz++] = y;
-            arr[sz++] = u1;
-            arr[sz++] = v1;
-            arr[sz++] = u + eps;
-            arr[sz++] = v + eps;
-            arr[sz++] = u + w - eps;
-            arr[sz++] = v + h - eps;
-            arr[sz++] = animXEncoded;
-            arr[sz++] = animYEncoded;
-            ints[sz++] = textureId;
-            arr[sz++] = animDivisor;
-            arr[sz++] = colR;
-            arr[sz++] = colG;
-            arr[sz++] = colB;
-            arr[sz++] = colA;
+                arr[sz++] = x + w;
+                arr[sz++] = y + h;
+                arr[sz++] = u2;
+                arr[sz++] = v2;
+                arr[sz++] = u + eps;
+                arr[sz++] = v + eps;
+                arr[sz++] = u + w - eps;
+                arr[sz++] = v + h - eps;
+                arr[sz++] = animXEncoded;
+                arr[sz++] = animYEncoded;
+                ints[sz++] = textureId;
+                arr[sz++] = animDivisor;
+                arr[sz++] = colR;
+                arr[sz++] = colG;
+                arr[sz++] = colB;
+                arr[sz++] = colA;
 
-            arr[sz++] = x + w;
-            arr[sz++] = y + h;
-            arr[sz++] = u2;
-            arr[sz++] = v2;
-            arr[sz++] = u + eps;
-            arr[sz++] = v + eps;
-            arr[sz++] = u + w - eps;
-            arr[sz++] = v + h - eps;
-            arr[sz++] = animXEncoded;
-            arr[sz++] = animYEncoded;
-            ints[sz++] = textureId;
-            arr[sz++] = animDivisor;
-            arr[sz++] = colR;
-            arr[sz++] = colG;
-            arr[sz++] = colB;
-            arr[sz++] = colA;
-
-            arr[sz++] = x;
-            arr[sz++] = y + h;
-            arr[sz++] = u3;
-            arr[sz++] = v3;
-            arr[sz++] = u + eps;
-            arr[sz++] = v + eps;
-            arr[sz++] = u + w - eps;
-            arr[sz++] = v + h - eps;
-            arr[sz++] = animXEncoded;
-            arr[sz++] = animYEncoded;
-            ints[sz++] = textureId;
-            arr[sz++] = animDivisor;
-            arr[sz++] = colR;
-            arr[sz++] = colG;
-            arr[sz++] = colB;
-            arr[sz++] = colA;
+                arr[sz++] = x;
+                arr[sz++] = y + h;
+                arr[sz++] = u3;
+                arr[sz++] = v3;
+                arr[sz++] = u + eps;
+                arr[sz++] = v + eps;
+                arr[sz++] = u + w - eps;
+                arr[sz++] = v + h - eps;
+                arr[sz++] = animXEncoded;
+                arr[sz++] = animYEncoded;
+                ints[sz++] = textureId;
+                arr[sz++] = animDivisor;
+                arr[sz++] = colR;
+                arr[sz++] = colG;
+                arr[sz++] = colB;
+                arr[sz++] = colA;
+            } else {
+                throw new Error('Buffer is not initialized');
+            }
         }
-
-        vertexBuf.data = arr;
+        vertexBuf.data = arr ?? new Float32Array();
     }
 
     /**

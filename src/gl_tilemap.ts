@@ -68,12 +68,12 @@ export class GlTilemapAdaptor extends TilemapAdaptor
         name: 'tilemap',
     } as const;
 
-    _shader: Shader = null;
+    _shader: Shader | null = null;
     max_textures: number = settings.TEXTURES_PER_TILEMAP;
 
     destroy(): void
     {
-        this._shader.destroy(true);
+        this._shader?.destroy(true);
         this._shader = null;
     }
 
@@ -83,7 +83,7 @@ export class GlTilemapAdaptor extends TilemapAdaptor
         const shader = this._shader;
         const tileset = tilemap.getTileset();
 
-        const tu = shader.resources.texture_uniforms;
+        const tu = shader?.resources.texture_uniforms;
 
         if (tu.uniforms.u_texture_size !== tileset.tex_sizes)
         {
@@ -95,15 +95,18 @@ export class GlTilemapAdaptor extends TilemapAdaptor
         {
             renderer.texture.bind(tileset.arr[i], i);
         }
-
-        renderer.encoder.draw({
-            geometry: tilemap.vb,
-            shader,
-            state: tilemap.state,
-            size: tilemap.rects_count * 6
-        });
-
-        // TODO: support several tilemaps here, without re-setting extra uniforms
+        if(shader) {
+            if(!tilemap.vb)
+                throw new Error('Tilemap vertex buffer is not initialized');
+            renderer.encoder.draw({
+                geometry: tilemap.vb,
+                shader,
+                state: tilemap.state,
+                size: tilemap.rects_count * 6
+            });
+        } else {
+            throw new Error('Shader is not initialized');
+        }
     }
 
     init(): void

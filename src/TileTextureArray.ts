@@ -16,11 +16,11 @@ export class TileTextureArray
     count = 0;
     dirty = false;
     dirty_gpu = false;
-    bind_group: BindGroup = null;
+    bind_group: BindGroup | null = null;
     bind_group_resources: any = {};
-    tex_sizes: Float32Array = null;
+    tex_sizes: Float32Array | null = null;
     null_color: Float32Array = new Float32Array([0, 0, 0, 0.5]);
-    tex_buf: Buffer = null;
+    tex_buf: Buffer | null = null;
 
     get length()
     {
@@ -49,6 +49,9 @@ export class TileTextureArray
         this.dirty_gpu = true;
 
         const { tex_sizes, arr, count, max_textures, null_color } = this;
+
+        if(!tex_sizes)
+            throw new Error('Texture sizes buffer is not initialized');
 
         for (let i = 0; i < count; i++)
         {
