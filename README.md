@@ -8,6 +8,10 @@
 This package provides a low-level rectangular tilemap implementation, optimized for high performance rendering and a
 out-of-the-box canvas fallback.
 
+## Modifications
+
+Allows for tile specific color modifications
+
 ## Version Compatiblity
 
 | PixiJS | PixiJS Tilemap Kit |
