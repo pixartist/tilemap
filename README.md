@@ -8,7 +8,7 @@
 This package provides a low-level rectangular tilemap implementation, optimized for high performance rendering and a
 out-of-the-box canvas fallback.
 
-## Modifications
+## Modifications in this fork
 
 Allows for tile specific color modifications
 
