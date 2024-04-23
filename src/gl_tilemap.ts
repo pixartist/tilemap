@@ -19,7 +19,6 @@ uniform vec2 u_anim_frame;
 out vec2 vTextureCoord;
 out float vTextureId;
 out vec4 vFrame;
-out float vAlpha;
 out vec4 vColMul;
 
 void main(void)

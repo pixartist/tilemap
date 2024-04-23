@@ -211,7 +211,10 @@ export class CompositeTilemap extends Container
      * @param [options.animCountY=1024] - For animated tiles, this is the number of animation frame textures
      *      per column.
      * @param [options.animDivisor=1] - For animated tiles, this is the animation duration each frame
-     * @param [options.alpha=1] - Tile alpha
+     * @param [options.colR=1] - Tile red multiplier.
+     * @param [options.colG=1] - Tile green multiplier.
+     * @param [options.colB=1] - Tile blue multiplier.
+     * @param [options.colA=1] - Tile alpha multiplier.
      * @return This tilemap, good for chaining.
      */
     tile(
@@ -229,7 +232,10 @@ export class CompositeTilemap extends Container
             animCountX?: number,
             animCountY?: number,
             animDivisor?: number,
-            alpha?: number,
+            colR?: number,
+            colG?: number,
+            colB?: number,
+            colA?: number,
         } = {}
     ): this
     {
@@ -384,7 +390,10 @@ export class CompositeTilemap extends Container
         animWidth?: number,
         animHeight?: number,
         animDivisor?: number,
-        alpha?: number
+        colR?: number,
+        colG?: number,
+        colB?: number,
+        colA?: number
     ): this
     {
         return this.tile(
@@ -396,7 +405,10 @@ export class CompositeTilemap extends Container
                 animCountX: animWidth,
                 animCountY: animHeight,
                 animDivisor,
-                alpha
+                colR,
+                colG,
+                colB,
+                colA,
             }
         );
     }

@@ -47,7 +47,7 @@
         const textures = PIXI.Assets.get('atlas').textures;
 
         tilemap.tile(textures['brick.png'], 2 * size, 2 * size);
-        tilemap.tile(textures['brick_wall.png'], 2 * size, 3 * size, { alpha: 0.6 });
+        tilemap.tile(textures['brick_wall.png'], 2 * size, 3 * size, { colA: 0.6 });
 
         // chest will be animated!
         // old way: animate on rebuild

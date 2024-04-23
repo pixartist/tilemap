@@ -48,7 +48,7 @@ fn mainVert(
   var vTextureCoord = aTextureCoord + animOffset;
   var vFrame = aFrame + vec4(animOffset, animOffset);
 
-  return VSOutput(vPosition, aTextureId, vTextureCoord, vFrame, aAlpha);
+  return VSOutput(vPosition, aTextureId, vTextureCoord, vFrame, aColMul);
 };
 `;
 

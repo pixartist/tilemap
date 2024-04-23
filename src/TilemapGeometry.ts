@@ -72,9 +72,9 @@ export class TilemapGeometry extends Geometry
                     offset: 11 * 4,
                     // location: 2
                 },
-                aAlpha: {
+                aColMul: {
                     buffer: buf,
-                    format: 'float32',
+                    format: 'float32x4',
                     stride,
                     offset: 12 * 4,
                     // location: 0

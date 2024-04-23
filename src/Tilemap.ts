@@ -22,7 +22,10 @@ enum POINT_STRUCT
     ANIM_COUNT_X,
     ANIM_COUNT_Y,
     ANIM_DIVISOR,
-    ALPHA,
+    COL_R,
+    COL_G,
+    COL_B,
+    COL_A,
 }
 
 export const POINT_STRUCT_SIZE = (Object.keys(POINT_STRUCT).length / 2);
@@ -233,7 +236,10 @@ export class Tilemap extends Container
      * @param [options.animCountY=1024] - For animated tiles, this is the number of animation frame textures
      *      per column.
      * @param [options.animDivisor=1] - For animated tiles, this is the animation duration of each frame
-     * @param [options.alpha=1] - Tile alpha
+     * @param [options.col_r=1] - Tile red multiplier
+     * @param [options.col_g=1] - Tile green multiplier
+     * @param [options.col_b=1] - Tile blue multiplier
+     * @param [options.col_a=1] - Tile alpha multiplier
      * @return This tilemap, good for chaining.
      */
     tile(
@@ -251,7 +257,10 @@ export class Tilemap extends Container
             animCountX?: number,
             animCountY?: number,
             animDivisor?: number,
-            alpha?: number,
+            colR?: number,
+            colG?: number,
+            colB?: number,
+            colA?: number,
         } = {}
     ): this
     {
@@ -319,7 +328,10 @@ export class Tilemap extends Container
             animCountX = 1024,
             animCountY = 1024,
             animDivisor = 1,
-            alpha = 1,
+            colR = 1,
+            colG = 1,
+            colB = 1,
+            colA = 1,
         } = options;
 
         const pb = this.pointsBuf;
@@ -339,7 +351,10 @@ export class Tilemap extends Container
         pb.push(animCountX);
         pb.push(animCountY);
         pb.push(animDivisor);
-        pb.push(alpha);
+        pb.push(colR);
+        pb.push(colG);
+        pb.push(colB);
+        pb.push(colA);
 
         this.tilemapBounds.addFrame(x, y, x + tileWidth, y + tileHeight);
 
@@ -381,11 +396,32 @@ export class Tilemap extends Container
         pb[pb.length - (POINT_STRUCT_SIZE - POINT_STRUCT.ANIM_DIVISOR)] = divisor;
     }
 
-    tileAlpha(alpha: number): void
+    tileR(r: number): void
     {
         const pb = this.pointsBuf;
 
-        pb[pb.length - (POINT_STRUCT_SIZE - POINT_STRUCT.ALPHA)] = alpha;
+        pb[pb.length - (POINT_STRUCT_SIZE - POINT_STRUCT.COL_R)] = r;
+    }
+
+    tileG(g: number): void
+    {
+        const pb = this.pointsBuf;
+
+        pb[pb.length - (POINT_STRUCT_SIZE - POINT_STRUCT.COL_G)] = g;
+    }
+
+    tileB(b: number): void
+    {
+        const pb = this.pointsBuf;
+
+        pb[pb.length - (POINT_STRUCT_SIZE - POINT_STRUCT.COL_B)] = b;
+    }
+
+    tileA(a: number): void
+    {
+        const pb = this.pointsBuf;
+
+        pb[pb.length - (POINT_STRUCT_SIZE - POINT_STRUCT.COL_A)] = a;
     }
 
     private vbId = 0;
@@ -476,7 +512,10 @@ export class Tilemap extends Container
             const animXEncoded = animX + (animWidth * 2048);
             const animYEncoded = animY + (animHeight * 2048);
             const animDivisor = points[i + POINT_STRUCT.ANIM_DIVISOR];
-            const alpha = points[i + POINT_STRUCT.ALPHA];
+            const colR = points[i + POINT_STRUCT.COL_R];
+            const colG = points[i + POINT_STRUCT.COL_G];
+            const colB = points[i + POINT_STRUCT.COL_B];
+            const colA = points[i + POINT_STRUCT.COL_A];
 
             let u0: number;
             let v0: number; let u1: number;
@@ -537,7 +576,10 @@ export class Tilemap extends Container
             arr[sz++] = animYEncoded;
             ints[sz++] = textureId;
             arr[sz++] = animDivisor;
-            arr[sz++] = alpha;
+            arr[sz++] = colR;
+            arr[sz++] = colG;
+            arr[sz++] = colB;
+            arr[sz++] = colA;
 
             arr[sz++] = x + w;
             arr[sz++] = y;
@@ -551,7 +593,10 @@ export class Tilemap extends Container
             arr[sz++] = animYEncoded;
             ints[sz++] = textureId;
             arr[sz++] = animDivisor;
-            arr[sz++] = alpha;
+            arr[sz++] = colR;
+            arr[sz++] = colG;
+            arr[sz++] = colB;
+            arr[sz++] = colA;
 
             arr[sz++] = x + w;
             arr[sz++] = y + h;
@@ -565,7 +610,10 @@ export class Tilemap extends Container
             arr[sz++] = animYEncoded;
             ints[sz++] = textureId;
             arr[sz++] = animDivisor;
-            arr[sz++] = alpha;
+            arr[sz++] = colR;
+            arr[sz++] = colG;
+            arr[sz++] = colB;
+            arr[sz++] = colA;
 
             arr[sz++] = x;
             arr[sz++] = y + h;
@@ -579,7 +627,10 @@ export class Tilemap extends Container
             arr[sz++] = animYEncoded;
             ints[sz++] = textureId;
             arr[sz++] = animDivisor;
-            arr[sz++] = alpha;
+            arr[sz++] = colR;
+            arr[sz++] = colG;
+            arr[sz++] = colB;
+            arr[sz++] = colA;
         }
 
         vertexBuf.data = arr;
@@ -670,14 +721,17 @@ export class Tilemap extends Container
         animCountX = 1024,
         animCountY = 1024,
         animDivisor = 1,
-        alpha = 1,
+        colR = 1,
+        colG = 1,
+        colB = 1,
+        colA = 1
     ): this
     {
         return this.tile(
             textureIndex,
             x, y,
             {
-                u, v, tileWidth, tileHeight, animX, animY, rotate, animCountX, animCountY, animDivisor, alpha
+                u, v, tileWidth, tileHeight, animX, animY, rotate, animCountX, animCountY, animDivisor, colR, colG, colB, colA
             }
         );
     }
