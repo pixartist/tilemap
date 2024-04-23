@@ -2,6 +2,63 @@ import { Container, Texture, TextureSource } from 'pixi.js';
 import { settings } from './settings';
 import { Tilemap } from './Tilemap';
 
+/**
+ * A tilemap composite that lazily builds tilesets layered into multiple tilemaps.
+ *
+ * The composite tileset is the concatenation of the individual tilesets used in the tilemaps. You can
+ * preinitialized it by passing a list of tile textures to the constructor. Otherwise, the composite tilemap
+ * is lazily built as you add more tiles with newer tile textures. A new tilemap is created once the last
+ * tilemap has reached its limit (as set by {@link CompositeTilemap.texturesPerTilemap texturesPerTilemap}).
+ *
+ * @example
+ * import { Application } from '@pixi/app';
+ * import { CompositeTilemap } from '@pixi/tilemap';
+ * import { Loader } from '@pixi/loaders';
+ *
+ * // Setup view & stage.
+ * const app = new Application();
+ *
+ * document.body.appendChild(app.renderer.view);
+ * app.stage.interactive = true;
+ *
+ * // Global reference to the tilemap.
+ * let globalTilemap: CompositeTilemap;
+ *
+ * // Load the tileset spritesheet!
+ * Loader.shared.load('atlas.json');
+ *
+ * // Initialize the tilemap scene when the assets load.
+ * Loader.shared.load(function onTilesetLoaded()
+ * {
+ *      const tilemap = new CompositeTilemap();
+ *
+ *      // Setup the game level with grass and dungeons!
+ *      for (let x = 0; x < 10; x++)
+ *      {
+ *          for (let y = 0; y < 10; y++)
+ *          {
+ *              tilemap.tile(
+ *                  x % 2 === 0 && (x === y || x + y === 10) ? 'dungeon.png' : 'grass.png',
+ *                  x * 100,
+ *                  y * 100,
+ *              );
+ *          }
+ *      }
+ *
+ *      globalTilemap = app.stage.addChild(tilemap);
+ * });
+ *
+ * // Show a bomb at a random location whenever the user clicks!
+ * app.stage.on('click', function onClick()
+ * {
+ *      if (!globalTilemap) return;
+ *
+ *      const x = Math.floor(Math.random() * 10);
+ *      const y = Math.floor(Math.random() * 10);
+ *
+ *      globalTilemap.tile('bomb.png', x * 100, y * 100);
+ * });
+ */
 export class CompositeTilemap extends Container
 {
     /** The hard limit on the number of tile textures used in each tilemap. */
@@ -17,10 +74,10 @@ export class CompositeTilemap extends Container
      * The animation frame vector specifies which animation frame texture to use. If the x/y coordinate is
      * larger than the `animCountX` or `animCountY` for a specific tile, the modulus is taken.
      */
-    public tileAnim: [number, number] | null = null;
+    public tileAnim: [number, number] = null;
 
     /** The last modified tilemap. */
-    protected lastModifiedTilemap: Tilemap | null = null;
+    protected lastModifiedTilemap: Tilemap = null;
 
     private modificationMarker = 0;
     // private shadowColor = new Float32Array([0.0, 0.0, 0.0, 0.5]);
@@ -46,7 +103,7 @@ export class CompositeTilemap extends Container
      *
      * @param tileTextures - The list of tile textures that make up the tileset.
      */
-    tileset(tileTextures?: Array<TextureSource>): this
+    tileset(tileTextures: Array<TextureSource>): this
     {
         if (!tileTextures)
         {
@@ -182,7 +239,7 @@ export class CompositeTilemap extends Container
         } = {}
     ): this
     {
-        let tilemap: Tilemap | null = null;
+        let tilemap: Tilemap = null;
         const children = this.children;
 
         this.lastModifiedTilemap = null;

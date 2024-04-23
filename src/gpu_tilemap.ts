@@ -80,13 +80,13 @@ export class GpuTilemapAdaptor extends TilemapAdaptor
         name: 'tilemap',
     } as const;
 
-    _shader: Shader | null = null;
+    _shader: Shader = null;
     max_textures: number = settings.TEXTURES_PER_TILEMAP;
-    bind_group: BindGroup | null = null;
+    bind_group: BindGroup = null;
 
     destroy(): void
     {
-        this._shader?.destroy(true);
+        this._shader.destroy(true);
         this._shader = null;
     }
 
@@ -95,30 +95,18 @@ export class GpuTilemapAdaptor extends TilemapAdaptor
         const renderer = pipe.renderer;
         const shader = this._shader;
         // GPU..
-        if(shader) {
 
-            const tilesetBindGroup = tilemap.getTileset().getBindGroup();
-            const selfBindGroup = this.bind_group;
+        shader.groups[0] = renderer.globalUniforms.bindGroup;
+        shader.groups[1] = tilemap.getTileset().getBindGroup();
+        shader.groups[2] = this.bind_group;
 
-            if(!tilesetBindGroup || !selfBindGroup)
-                throw new Error('Tileset or self bind group is not initialized');
-
-            shader.groups[0] = renderer.globalUniforms.bindGroup;
-            shader.groups[1] = tilesetBindGroup;
-            shader.groups[2] = selfBindGroup;
-
-            if(!tilemap.vb)
-                throw new Error('Tilemap vertex buffer is not initialized');
-
-            renderer.encoder.draw({
-                geometry: tilemap.vb,
-                shader,
-                state: tilemap.state,
-                size: tilemap.rects_count * 6
-            });
-        } else {
-            throw new Error('Shader or bind group is not initialized');
-        }
+        renderer.encoder.draw({
+            geometry: tilemap.vb,
+            shader,
+            state: tilemap.state,
+            size: tilemap.rects_count * 6
+        });
+        // TODO: does it need groups?
     }
 
     init(): void
