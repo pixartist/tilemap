@@ -11,7 +11,7 @@ in vec4 aFrame;
 in vec2 aAnim;
 in float aAnimDivisor;
 in float aTextureId;
-in float aAlpha;
+in vec4 aColMul;
 
 uniform mat3 u_proj_trans;
 uniform vec2 u_anim_frame;
@@ -20,6 +20,7 @@ out vec2 vTextureCoord;
 out float vTextureId;
 out vec4 vFrame;
 out float vAlpha;
+out vec4 vColMul;
 
 void main(void)
 {
@@ -33,7 +34,7 @@ void main(void)
   vTextureCoord = aTextureCoord + animOffset;
   vFrame = aFrame + vec4(animOffset, animOffset);
   vTextureId = aTextureId;
-  vAlpha = aAlpha;
+  vColMul = aColMul;
 }
 `;
 
@@ -46,7 +47,7 @@ precision mediump float;
 in vec2 vTextureCoord;
 in vec4 vFrame;
 in float vTextureId;
-in float vAlpha;
+in vec4 vColMul;
 
 //include_textures
 
@@ -55,7 +56,7 @@ void main(void)
   float textureId = floor(vTextureId + 0.5);
   vec2 textureCoord = clamp(vTextureCoord, vFrame.xy, vFrame.zw);
   vec4 color = sampleMultiTexture(textureId, textureCoord);
-  finalColor = color * vAlpha;
+  finalColor = color * vColMul;
 }
 `;
 

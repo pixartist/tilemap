@@ -25,7 +25,7 @@ struct VSOutput {
   @location(0) @interpolate(flat) vTextureId : i32,
   @location(1) vTextureCoord : vec2f,
   @location(2) @interpolate(flat) vFrame : vec4f,
-  @location(3) vAlpha : f32
+  @location(3) vColMul : vec4f
 };
 
 @vertex
@@ -36,7 +36,7 @@ fn mainVert(
    @location(1) aAnim: vec2f,
    @location(2) aAnimDivisor: f32,
    @location(5) aTextureId: i32,
-   @location(0) aAlpha: f32,
+   @location(0) aColMul: vec4f,
  ) -> VSOutput {
 
   var vPosition = vec4((loc.u_proj_trans * vec3(aVertexPosition, 1.0)).xy, 0.0, 1.0);
@@ -60,14 +60,14 @@ fn mainFrag(
   @location(0) @interpolate(flat) vTextureId : i32,
   @location(1) vTextureCoord : vec2f,
   @location(2) @interpolate(flat) vFrame : vec4f,
-  @location(3) vAlpha : f32,
+  @location(3) vColMul : vec4f,
   ) -> @location(0) vec4f {
   var textureCoord = clamp(vTextureCoord, vFrame.xy, vFrame.zw);
   var uv = textureCoord * taf.u_texture_size[vTextureId].zw;
   var dx = dpdx(uv);
   var dy = dpdy(uv);
   var color = sampleMultiTexture(vTextureId, uv, dx, dy);
-  return color * vAlpha;
+  return color * vColMul;
 };
 `;
 
